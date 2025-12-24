@@ -1,0 +1,31 @@
+Project: Arabic Feedback Analyzer
+Version: 1.0.0
+Release Date: December 8, 2025
+Status: ✓ Production Ready (جاهز للإنتاج)
+
+---
+
+Features (المميزات):
+✓ تحليل نصوص عربية تلقائياً
+✓ تصنيف النصوص إلى: رضا / شكوى
+✓ لوحة تحكم مع رسوم بيانية
+✓ نموذج AI مُدرّب بالفعل
+✓ واجهة مستخدم عربية
+✓ API للتكامل مع أنظمة أخرى
+✓ إعادة تدريب سهلة
+
+---
+
+Architecture:
+- Backend: FastAPI (Python)
+- Frontend: HTML5 + JavaScript + CSS3
+- ML Model: Scikit-learn (TfidfVectorizer + LogisticRegression)
+- Database: CSV (sample data)
+
+---
+
+Tested On:
+- Python 3.13
+- macOS 13+
+- Linux (Ubuntu 22.04+)
+- Windows 10/11 (with Python installed)

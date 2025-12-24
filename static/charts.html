@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرسوم البيانية - نظام تصنيف التعليقات</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .chart-title {
+            font-size: 1.5em;
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .stats-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            color: #718096;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            padding: 50px;
+        }
+
+        canvas {
+            max-height: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        .info-box {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .info-title {
+            font-size: 1.3em;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .info-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: #f7fafc;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-label {
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 الرسوم البيانية والإحصائيات</h1>
+        
+        <div class="loading" id="loading">جاري تحميل البيانات...</div>
+
+        <div id="content" style="display: none;">
+            <!-- Stats Boxes -->
+            <div class="grid">
+                <div class="stats-box">
+                    <div class="stat-label">دقة النموذج</div>
+                    <div class="stat-value" id="accuracy">--%</div>
+                    <div class="stat-label">Model Accuracy</div>
+                </div>
+
+                <div class="stats-box">
+                    <div class="stat-label">إجمالي البيانات</div>
+                    <div class="stat-value" id="totalData">--</div>
+                    <div class="stat-label">Total Data Points</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid">
+                <div class="chart-container">
+                    <div class="chart-title">توزيع البيانات حسب التصنيف</div>
+                    <canvas id="pieChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">مقارنة الفئات</div>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="chart-container">
+                    <div class="chart-title">نسبة التوزيع المئوية</div>
+                    <canvas id="doughnutChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">خط الاتجاه</div>
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-title">معلومات النظام</div>
+                <div class="info-item">
+                    <span class="info-label">الخوارزمية المستخدمة</span>
+                    <span class="info-value">Logistic Regression</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">تقنية استخراج الميزات</span>
+                    <span class="info-value">TF-IDF Vectorizer</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">نسبة بيانات الاختبار</span>
+                    <span class="info-value">30%</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">عدد التصنيفات</span>
+                    <span class="info-value" id="numClasses">2</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                // Fetch stats and accuracy
+                const [statsRes, accuracyRes] = await Promise.all([
+                    fetch('/stats'),
+                    fetch('/accuracy')
+                ]);
+
+                const statsData = await statsRes.json();
+                const accuracyData = await accuracyRes.json();
+
+                return {
+                    stats: statsData,
+                    accuracy: accuracyData
+                };
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').textContent = 'حدث خطأ في تحميل البيانات';
+                return null;
+            }
+        }
+
+        function createCharts(data) {
+            const stats = data.stats;
+            const accuracy = data.accuracy;
+
+            // Update stats
+            document.getElementById('accuracy').textContent = accuracy.accuracy + '%';
+            document.getElementById('totalData').textContent = stats.total;
+
+            const counts = stats.counts;
+            const labels = Object.keys(counts);
+            const values = Object.values(counts);
+            const colors = ['#84fab0', '#fa709a'];
+
+            // Pie Chart
+            new Chart(document.getElementById('pieChart'), {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 14 },
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Bar Chart
+            new Chart(document.getElementById('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'عدد التعليقات',
+                        data: values,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 12 }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Doughnut Chart
+            new Chart(document.getElementById('doughnutChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors,
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 14 },
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Line Chart (showing percentages)
+            const percentages = values.map(v => ((v / stats.total) * 100).toFixed(1));
+            new Chart(document.getElementById('lineChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'النسبة المئوية %',
+                        data: percentages,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: colors,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                },
+                                font: { size: 12 }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Show content
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        }
+
+        // Load and display data
+        loadData().then(data => {
+            if (data) {
+                createCharts(data);
+            }
+        });
+    </script>
+</body>
+</html>
