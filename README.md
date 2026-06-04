@@ -1,101 +1,70 @@
-# مشروع تحليل رضا وشكاوى العملاء (باللغة العربية)
+<div align="center">
 
-وصف المشروع:
-- مشروع ويب كامل لتحليل نصوص عربية وتصنيفها كـ `رضا` أو `شكوى` باستخدام AI.
-- واجهة مستخدم تفاعلية تعرض لوحة تحكم (Dashboard) مع رسم بياني ونموذج اختبار نصي.
-- نموذج تعلم آلي مُدرّب بالفعل على بيانات عيّنة عربية.
+# 🧠 مشروع تحليل رضا وشكاوى العملاء (باللغة العربية)
 
-متطلبات أولية:
-- Python 3.10 أو أحدث
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green?style=for-the-badge&logo=fastapi&logoColor=white)
+![AI](https://img.shields.io/badge/AI-Sentiment%20Analysis-orange?style=for-the-badge&logo=openai&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)
+
+> تحليل تلقائي لتعليقات وشكاوى العملاء العرب باستخدام الذكاء الاصطناعي — تصنيف المشاعر، رسم بياني، ولوحة تحكم تفاعلية.
+
+</div>
+
+---
+
+## ✨ المميزات
+
+| الميزة | الوصف |
+|--------|-------|
+| 🔍 تحليل النصوص العربية | تحليل التعليقات والشكاوى المكتوبة بالعربية |
+| 😊😠 تصنيف المشاعر | تصنيف النص كـ **إيجابي** أو **سلبي** تلقائياً |
+| 📊 لوحة تحكم تفاعلية | Dashboard مع رسوم بيانية واضحة |
+| 🤖 نموذج AI مدرَّب | نموذج تعلم آلي مدرَّب على بيانات عربية حقيقية |
+| ⚡ واجهة API | REST API جاهزة للتكامل مع أي نظام |
+
+---
+
+## 🗂️ هيكل المشروع
+
+\```
+Arabic-Customer-Feedback-Analysis/
+│
+├── app/
+│   └── backend.py
+├── models/
+├── static/
+├── print_evaluation.py
+├── requirements.txt
+├── run.sh
+└── README.md
+\```
+
+---
+
+## ⚙️ المتطلبات
+
+- Python **3.10** أو أحدث
 - macOS / Linux / Windows
 
-## ✅ الخطوات السريعة للتشغيل
+---
 
-### الطريقة الأولى (الأسرع):
-```bash
+## 🚀 التشغيل السريع
+
+\```bash
 cd ~/Desktop/ProjectSTC
 bash run.sh
-```
-افتح المتصفح: **http://127.0.0.1:8000/static/index.html**
+\```
 
-### الطريقة الثانية (يدوية):
-```bash
-cd ~/Desktop/ProjectSTC
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python3 -m uvicorn app.backend:app --reload --host 127.0.0.1 --port 8000
-```
-افتح المتصفح: **http://127.0.0.1:8000/static/index.html**
+افتح المتصفح: http://127.0.0.1:8000/static/index.html
 
-## 📡 نقاط نهاية API:
- - `POST /predict`  يمكن إرسال `{"text":"...","save": true}` لحفظ النص والنتيجة في قاعدة الإرساليات
- - `GET /submissions` => جلب الإرساليات المحفوظة (JSON)
- - `POST /predict`  يمكن إرسال `{"text":"...","save": true}` لحفظ النص والنتيجة في قاعدة الإرساليات (واجهة الآن تطلب موافقة صريحة عبر خانة اختيار)
- - `POST /submissions/delete` => احذف إرساليات معينة عبر تمرير أداة JSON: `{"timestamps": ["2025-12-08T17:32:50.950245", ...]}`
- - `POST /submissions/clear` => احذف جميع الإرساليات (يُرجع عدد المحذوفات)
- - `GET /submissions/download` => تنزيل ملف `submissions.csv`
+---
 
-## 📁 هيكل المشروع:
-```
-ProjectSTC/
-├── app/
-│   ├── __init__.py
-│   ├── backend.py       # خادم FastAPI
-│   ├── model_utils.py   # دوال التدريب والتنبؤ
-│   └── train.py         # سكربت التدريب
-├── data/
-│   └── sample_data.csv  # بيانات تدريب عيّنة
-├── models/
-│   └── model.joblib     # الموديل المُدرّب (معدّ بالفعل)
-├── static/
-│   ├── index.html       # الواجهة الرئيسية
-│   ├── app.js           # منطق الواجهة
-│   └── styles.css       # أنماط الواجهة
-├── requirements.txt     # المكتبات المطلوبة
-├── run.sh              # سكربت تشغيل سريع
-└── README.md           # هذا الملف
-```
+## 👤 المطوّر
 
-## 🚀 جاهز للتشغيل الفوري!
-الموديل **معدّ بالفعل** وجميع الملفات موجودة. فقط شغّل الأمر أعلاه!
+**Ali-upp** — [@Ali-upp](https://github.com/Ali-upp)
 
-# مشروع تحليل رضا وشكاوى العملاء (باللغة العربية)
+---
 
-وصف المشروع:
-- مشروع ويب بسيط لتحليل نصوص عربية وتصنيفها كـ `رضا` أو `شكوى` باستخدام نموذج تعلم آلي.
-- يتضمن واجهة مستخدم لعرض لوحة تحكم (Dashboard) ونموذج اختبار نصي.
-- يحتوي على سكربت لتدريب نموذج عربي باستخدام بيانات عيّنة ويخزن الموديل لتنبؤات لاحقة.
-
-متطلبات أولية:
-- Python 3.10 أو أحدث
-- نظام macOS / Linux / Windows
-
-تشغيل المشروع محليًا (خطوات سريعة):
-1. افتح الطرفية وتوجّه إلى مجلد المشروع:
-```bash
-cd ~/Desktop/ProjectSTC
-```
-2. أنشئ بيئة افتراضية وثبت المتطلبات:
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-3. تشغيل الخادم (الخادم سيقوم بتدريب الموديل تلقائيًا إن لم يكن موجودًا):
-```bash
-uvicorn app.backend:app --reload --host 127.0.0.1 --port 8000
-```
-4. افتح المتصفح وتوجّه إلى `http://127.0.0.1:8000/static/index.html`
-
-نهايات مفيدة:
-- لتدريب الموديل يدويًا: `python app/train.py`
-- API endpoints:
-  - `POST /predict`  => توقع نص واحد (JSON: {"text": "..."})
-  - `GET /stats`     => إحصائيات نسبة `رضا` مقابل `شكوى`
-  - `POST /train`    => إعادة تدريب الموديل فورًا
-
-ملاحظة:
-- النموذج المخزن يوجد في `models/model.joblib` بعد التدريب.
-
-إذا رغبت، أستطيع الآن تشغيل التدريب محليًا والقيام بتشغيل الخادم تلقائيًا، هل تريدني أن أفعل ذلك؟
+<div align="center">صُنع بـ ❤️ للغة العربية 🇸🇦</div>
